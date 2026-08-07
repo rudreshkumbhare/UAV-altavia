@@ -36,7 +36,7 @@ export default function Contact() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: '-80px' }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-20"
+          className="flex flex-col md:flex-row items-start justify-between gap-10 pb-20"
         >
           <div className="max-w-xl">
             <h2 className="font-display text-4xl md:text-6xl font-medium leading-tight mb-6">

@@ -86,17 +86,12 @@ export default function Hero() {
             </GradientShimmer>
             <br />
             <GradientShimmer
-              gradient={[
-                { color: '#ff8c3d', position: 0 },
-                { color: '#ffffff', position: 0.35 },
-                { color: '#ffd1b3', position: 0.5 },
-                { color: '#ff8c3d', position: 1 },
-              ]}
+              gradient="sunrise"
               duration={1.8}
               spread={4}
               angle={105}
               pauseBetween={3500}
-              baseColor="var(--color-amber)"
+              baseColor="var(--color-paper)"
             >
               no one has flown.
             </GradientShimmer>
