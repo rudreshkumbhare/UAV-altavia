@@ -246,7 +246,7 @@ function UAVBody({ interaction }) {
   })
 
   return (
-    <group ref={group} scale={1.35} rotation={[0.35, 0, 0]}>
+    <group ref={group} scale={1.42} rotation={[0.35, 0, 0]}>
       <mesh geometry={bodyGeo}>
         <meshBasicMaterial color={AMBER} transparent opacity={0.08} side={THREE.DoubleSide} />
       </mesh>
@@ -336,8 +336,8 @@ export default function UAVScene() {
     const dy = e.clientY - interaction.current.lastY
     interaction.current.lastX = e.clientX
     interaction.current.lastY = e.clientY
-    interaction.current.deltaX += dx * 0.007
-    interaction.current.deltaY += dy * 0.007
+    interaction.current.deltaX += dx * 0.008
+    interaction.current.deltaY += dy * 0.008
   }
 
   const handlePointerUp = (e) => {
@@ -347,7 +347,7 @@ export default function UAVScene() {
 
   return (
     <Canvas
-      camera={{ position: [0, 0, 4.2], fov: 42 }}
+      camera={{ position: [0, 0, 4.2], fov: 40 }}
       dpr={[1, 1.5]}
       gl={{ antialias: true, alpha: true }}
       style={{ position: 'absolute', inset: 0 }}
@@ -356,9 +356,9 @@ export default function UAVScene() {
       onPointerUp={handlePointerUp}
     >
       <group>
-        <AltimeterRing radius={1.9} speed={0.06} color={AMBER} segments={5} opacity={0.4} />
-        <AltimeterRing radius={2.15} speed={-0.03} color={CYAN} segments={8} opacity={0.25} />
-        <TickMarks radius={1.65} count={48} color={PAPER} />
+        <AltimeterRing radius={1.75} speed={0.06} color={AMBER} segments={5} opacity={0.4} />
+        <AltimeterRing radius={1.95} speed={-0.03} color={CYAN} segments={8} opacity={0.25} />
+        <TickMarks radius={1.55} count={48} color={PAPER} />
         <UAVBody interaction={interaction} />
       </group>
     </Canvas>

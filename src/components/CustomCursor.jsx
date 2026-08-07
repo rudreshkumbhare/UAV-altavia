@@ -18,24 +18,38 @@ export default function CustomCursor() {
     setEnabled(true)
     document.body.classList.add('custom-cursor-active')
 
-    const onMove = (e) => {
-      x.set(e.clientX)
-      y.set(e.clientY)
-      setVisible(true)
-
-      const target = e.target.closest?.('a, button, input, textarea, [data-cursor]')
+    const updateTarget = (clientX, clientY) => {
+      const target = document.elementFromPoint(clientX, clientY)?.closest?.('a, button, input, textarea, [data-cursor]')
       if (!target) {
         setVariant('default')
         return
       }
       setVariant(target.getAttribute('data-cursor') || 'hover')
     }
+
+    const onMove = (e) => {
+      x.set(e.clientX)
+      y.set(e.clientY)
+      setVisible(true)
+      updateTarget(e.clientX, e.clientY)
+    }
+
+    const onScroll = () => {
+      const currentX = x.get()
+      const currentY = y.get()
+      if (currentX >= 0 && currentY >= 0) {
+        updateTarget(currentX, currentY)
+      }
+    }
+
     const onLeaveWindow = () => setVisible(false)
 
     window.addEventListener('pointermove', onMove)
+    window.addEventListener('scroll', onScroll, { passive: true })
     document.documentElement.addEventListener('mouseleave', onLeaveWindow)
     return () => {
       window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('scroll', onScroll)
       document.documentElement.removeEventListener('mouseleave', onLeaveWindow)
       document.body.classList.remove('custom-cursor-active')
     }

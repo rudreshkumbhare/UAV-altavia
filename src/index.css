@@ -45,11 +45,8 @@ body {
    precise pointer — touch devices are never affected. */
 @media (pointer: fine) {
   .custom-cursor-active,
-  .custom-cursor-active a,
-  .custom-cursor-active button,
-  .custom-cursor-active input,
-  .custom-cursor-active textarea {
-    cursor: none;
+  .custom-cursor-active * {
+    cursor: none !important;
   }
 }
 
@@ -143,4 +140,46 @@ body {
 }
 ::-webkit-scrollbar-thumb {
   background: var(--color-line);
+}
+
+/* Headline sweep shine animation on page load */
+.headline-shine {
+  background: linear-gradient(
+    110deg,
+    #e8e6de 0%,
+    #e8e6de 35%,
+    #ffffff 48%,
+    #ffc299 56%,
+    #e8e6de 70%
+  );
+  background-size: 240% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine-sweep-once 2.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s 1 forwards;
+}
+
+.headline-shine-amber {
+  background: linear-gradient(
+    110deg,
+    #ff8c3d 0%,
+    #ff8c3d 35%,
+    #ffffff 48%,
+    #ffe0cc 56%,
+    #ff8c3d 70%
+  );
+  background-size: 240% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine-sweep-once 2.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s 1 forwards;
+}
+
+@keyframes shine-sweep-once {
+  0% {
+    background-position: 180% 0;
+  }
+  100% {
+    background-position: -80% 0;
+  }
 }
