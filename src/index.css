@@ -40,6 +40,19 @@ body {
   color: var(--color-graphite);
 }
 
+/* Custom cursor: only suppress the native cursor once the component has actually
+   mounted (guards against a dead cursor if JS fails), and only on devices with a
+   precise pointer — touch devices are never affected. */
+@media (pointer: fine) {
+  .custom-cursor-active,
+  .custom-cursor-active a,
+  .custom-cursor-active button,
+  .custom-cursor-active input,
+  .custom-cursor-active textarea {
+    cursor: none;
+  }
+}
+
 /* HUD corner brackets - the recurring signature motif */
 .hud-frame {
   position: relative;

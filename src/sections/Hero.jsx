@@ -31,7 +31,10 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-graphite pointer-events-none" />
 
       {/* 3D scene, right side on desktop, background on mobile */}
-      <div className="absolute inset-0 md:inset-y-0 md:right-0 md:left-[42%] opacity-40 md:opacity-90">
+      <div
+        data-cursor="drag"
+        className="absolute inset-0 md:inset-y-0 md:right-0 md:left-[42%] opacity-40 md:opacity-90"
+      >
         <Suspense fallback={null}>
           <UAVScene />
         </Suspense>
@@ -39,6 +42,15 @@ export default function Hero() {
 
       {/* mobile-only scrim so the wireframe UAV never fights the headline for contrast */}
       <div className="absolute inset-0 bg-gradient-to-b from-graphite via-graphite/80 to-graphite md:hidden pointer-events-none" />
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.6, duration: 0.8 }}
+        className="hidden md:block absolute bottom-10 right-10 mono-label text-[10px] text-paper-dim pointer-events-none"
+      >
+        Drag to rotate
+      </motion.div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 w-full">
         <motion.div variants={container} initial="hidden" animate="show" className="max-w-2xl">

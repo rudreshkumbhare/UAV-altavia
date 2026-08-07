@@ -97,7 +97,7 @@ function buildDeltaShape() {
   return s
 }
 
-function UAVBody() {
+function UAVBody({ interaction }) {
   const group = useRef()
   const { pointer } = useThreeState()
 
@@ -113,7 +113,15 @@ function UAVBody() {
   const edges = useMemo(() => new THREE.EdgesGeometry(geometry, 20), [geometry])
 
   useFrame((state, delta) => {
-    group.current.rotation.y += delta * 0.3
+    // manual drag takes over the idle auto-spin so it feels responsive, not fought
+    const dragging = interaction?.current.dragging
+    if (!dragging) {
+      group.current.rotation.y += delta * 0.3
+    }
+    if (interaction) {
+      group.current.rotation.y += interaction.current.deltaY
+      interaction.current.deltaY = 0
+    }
     const targetX = pointer.current.y * 0.2 + 0.35
     const targetZ = -pointer.current.x * 0.15
     group.current.rotation.x += (targetX - group.current.rotation.x) * 0.03
@@ -175,18 +183,45 @@ function useThreeState() {
 }
 
 export default function UAVScene() {
+  // dragging is mouse/trackpad only — deliberately ignores touch pointers so this
+  // never fights with page scroll on mobile, where the canvas sits full-bleed
+  const interaction = useRef({ dragging: false, lastX: 0, deltaY: 0 })
+
+  useEffect(() => {
+    const clearDrag = () => {
+      interaction.current.dragging = false
+    }
+    window.addEventListener('pointerup', clearDrag)
+    return () => window.removeEventListener('pointerup', clearDrag)
+  }, [])
+
+  const handlePointerDown = (e) => {
+    if (e.pointerType !== 'mouse') return
+    interaction.current.dragging = true
+    interaction.current.lastX = e.clientX
+  }
+
+  const handlePointerMove = (e) => {
+    if (!interaction.current.dragging) return
+    const dx = e.clientX - interaction.current.lastX
+    interaction.current.lastX = e.clientX
+    interaction.current.deltaY += dx * 0.006
+  }
+
   return (
     <Canvas
       camera={{ position: [0, 0, 4.2], fov: 42 }}
       dpr={[1, 1.5]}
       gl={{ antialias: true, alpha: true }}
       style={{ position: 'absolute', inset: 0 }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
     >
       <group>
         <AltimeterRing radius={1.9} speed={0.06} color={AMBER} segments={5} opacity={0.4} />
         <AltimeterRing radius={2.15} speed={-0.03} color={CYAN} segments={8} opacity={0.25} />
         <TickMarks radius={1.65} count={48} color={PAPER} />
-        <UAVBody />
+        <UAVBody interaction={interaction} />
       </group>
     </Canvas>
   )
