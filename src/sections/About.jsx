@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { SectionEyebrow, CoordTag } from '../components/Telemetry'
+import TiltCard from '../components/TiltCard'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -12,13 +13,13 @@ export default function About() {
       <div className="max-w-7xl mx-auto px-6 md:px-10 relative">
         <SectionEyebrow index="02" label="About Altavia" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-stretch">
           <motion.div
             variants={fadeUp}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: '-80px' }}
-            className="lg:col-span-7"
+            className="lg:col-span-7 flex flex-col justify-center"
           >
             <h2 className="font-display text-4xl md:text-5xl font-medium leading-tight mb-8">
               We build for the airspace
@@ -46,22 +47,23 @@ export default function About() {
             whileInView="show"
             viewport={{ once: true, margin: '-80px' }}
             transition={{ delay: 0.15 }}
-            className="lg:col-span-5 flex flex-col gap-px bg-line border border-line"
+            className="lg:col-span-5 flex flex-col gap-px bg-line border border-line h-full"
           >
-            <div className="hud-frame bg-graphite p-8">
-              <div className="mono-label text-xs text-amber mb-3">Mission</div>
+            <TiltCard className="h-full flex-1 hud-frame group bg-graphite p-8 flex flex-col justify-center gap-3 hover:bg-surface transition-colors duration-300">
+              <div className="mono-label text-xs text-amber mb-1">Mission</div>
               <p className="text-paper leading-relaxed">
                 Extend human reach into airspace too dangerous, too remote, or
                 too repetitive for a crewed aircraft to justify.
               </p>
-            </div>
-            <div className="hud-frame bg-graphite p-8">
-              <div className="mono-label text-xs text-cyan mb-3">Vision</div>
+            </TiltCard>
+
+            <TiltCard className="h-full flex-1 hud-frame group bg-graphite p-8 flex flex-col justify-center gap-3 hover:bg-surface transition-colors duration-300">
+              <div className="mono-label text-xs text-cyan mb-1">Vision</div>
               <p className="text-paper leading-relaxed">
                 A future where autonomous flight is boring — reliable enough
                 that nobody thinks twice about what's flying overhead.
               </p>
-            </div>
+            </TiltCard>
           </motion.div>
         </div>
 
@@ -82,3 +84,4 @@ export default function About() {
     </section>
   )
 }
+

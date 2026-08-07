@@ -2,14 +2,14 @@ import { useEffect, useRef } from 'react'
 
 // Fixed, full-viewport canvas that sits behind all page content.
 // Draws a slowly drifting grid, an occasional radar-style sweep, faint
-// upward-drifting particles, and rare "contact" blips at grid intersections.
-// Everything is intentionally subtle — this is atmosphere, not decoration
-// that competes with foreground content.
+// interactive particles that react and disperse when the cursor moves over them,
+// and rare "contact" blips at grid intersections.
 export default function AnimatedBackground() {
   const canvasRef = useRef(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
+    if (!canvas) return
     const ctx = canvas.getContext('2d')
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -22,16 +22,62 @@ export default function AnimatedBackground() {
     let rafId = null
     const start = performance.now()
 
+    // Mouse tracking for interactive particle dispersion
+    const mouse = {
+      x: -1000,
+      y: -1000,
+      vx: 0,
+      vy: 0,
+      prevX: -1000,
+      prevY: -1000,
+      active: false,
+    }
+
+    function handleMouseMove(e) {
+      const x = e.clientX
+      const y = e.clientY
+      if (mouse.prevX === -1000) {
+        mouse.vx = 0
+        mouse.vy = 0
+      } else {
+        mouse.vx = x - mouse.prevX
+        mouse.vy = y - mouse.prevY
+      }
+      mouse.x = x
+      mouse.y = y
+      mouse.prevX = x
+      mouse.prevY = y
+      mouse.active = true
+    }
+
+    function handleMouseLeave() {
+      mouse.active = false
+      mouse.x = -1000
+      mouse.y = -1000
+      mouse.prevX = -1000
+      mouse.prevY = -1000
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseleave', handleMouseLeave)
+
     function initParticles() {
-      const count = Math.min(50, Math.floor((width * height) / 30000))
-      particles = Array.from({ length: count }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        r: Math.random() * 1.3 + 0.4,
-        speed: Math.random() * 0.14 + 0.03,
-        drift: (Math.random() - 0.5) * 0.08,
-        alpha: Math.random() * 0.3 + 0.08,
-      }))
+      const count = Math.min(85, Math.floor((width * height) / 18000))
+      particles = Array.from({ length: count }, () => {
+        const isAmber = Math.random() < 0.25
+        return {
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: 0,
+          vy: 0,
+          r: Math.random() * 1.5 + 0.6,
+          speed: Math.random() * 0.18 + 0.04,
+          drift: (Math.random() - 0.5) * 0.1,
+          baseAlpha: Math.random() * 0.35 + 0.1,
+          alpha: 0.2,
+          isAmber,
+        }
+      })
 
       const cols = Math.ceil(width / CELL) + 2
       const rows = Math.ceil(height / CELL) + 2
@@ -109,20 +155,85 @@ export default function AnimatedBackground() {
     }
 
     function drawParticles() {
+      mouse.vx *= 0.85
+      mouse.vy *= 0.85
+      const radius = 170
+
       particles.forEach((p) => {
-        p.y -= p.speed
-        p.x += p.drift
-        if (p.y < -10) {
-          p.y = height + 10
+        if (mouse.active) {
+          const dx = p.x - mouse.x
+          const dy = p.y - mouse.y
+          const dist = Math.hypot(dx, dy)
+
+          if (dist < radius && dist > 0) {
+            const force = (radius - dist) / radius
+            const angle = Math.atan2(dy, dx)
+
+            p.vx += Math.cos(angle) * force * 0.9
+            p.vy += Math.sin(angle) * force * 0.9
+
+            p.vx += mouse.vx * 0.04 * force
+            p.vy += mouse.vy * 0.04 * force
+
+            p.alpha = Math.min(0.85, p.baseAlpha + force * 0.55)
+          } else {
+            p.alpha += (p.baseAlpha - p.alpha) * 0.05
+          }
+        } else {
+          p.alpha += (p.baseAlpha - p.alpha) * 0.05
+        }
+
+        p.vx *= 0.92
+        p.vy *= 0.92
+
+        p.x += p.vx + p.drift
+        p.y += p.vy - p.speed
+
+        if (p.y < -20) {
+          p.y = height + 20
+          p.x = Math.random() * width
+        } else if (p.y > height + 20) {
+          p.y = -20
           p.x = Math.random() * width
         }
-        if (p.x < -10) p.x = width + 10
-        if (p.x > width + 10) p.x = -10
+
+        if (p.x < -20) p.x = width + 20
+        else if (p.x > width + 20) p.x = -20
+
         ctx.beginPath()
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(232,230,222,${p.alpha})`
+        ctx.arc(p.x, p.y, p.r + (p.alpha > 0.5 ? 0.5 : 0), 0, Math.PI * 2)
+        if (p.isAmber) {
+          ctx.fillStyle = `rgba(255,140,61,${p.alpha})`
+        } else {
+          ctx.fillStyle = `rgba(232,230,222,${p.alpha})`
+        }
         ctx.fill()
       })
+
+      if (mouse.active) {
+        for (let i = 0; i < particles.length; i++) {
+          const p1 = particles[i]
+          const distToMouse = Math.hypot(p1.x - mouse.x, p1.y - mouse.y)
+          if (distToMouse > radius * 1.2) continue
+
+          for (let j = i + 1; j < particles.length; j++) {
+            const p2 = particles[j]
+            const pDist = Math.hypot(p1.x - p2.x, p1.y - p2.y)
+            if (pDist < 85) {
+              const lineAlpha = (1 - pDist / 85) * 0.18 * (1 - distToMouse / (radius * 1.2))
+              ctx.beginPath()
+              ctx.moveTo(p1.x, p1.y)
+              ctx.lineTo(p2.x, p2.y)
+              ctx.strokeStyle =
+                p1.isAmber || p2.isAmber
+                  ? `rgba(255,140,61,${lineAlpha})`
+                  : `rgba(232,230,222,${lineAlpha})`
+              ctx.lineWidth = 0.8
+              ctx.stroke()
+            }
+          }
+        }
+      }
     }
 
     function frame(now) {
@@ -146,6 +257,8 @@ export default function AnimatedBackground() {
 
     return () => {
       window.removeEventListener('resize', resize)
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseleave', handleMouseLeave)
       if (rafId) cancelAnimationFrame(rafId)
     }
   }, [])
@@ -156,3 +269,4 @@ export default function AnimatedBackground() {
     </div>
   )
 }
+
