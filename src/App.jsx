@@ -4,6 +4,8 @@ import About from './sections/About'
 import Domains from './sections/Domains'
 import Portfolio from './sections/Portfolio'
 import Workflow from './sections/Workflow'
+import Team from './sections/Team'
+import Gallery from './sections/Gallery'
 import Contact from './sections/Contact'
 
 function App() {
@@ -15,6 +17,8 @@ function App() {
       <Domains />
       <Portfolio />
       <Workflow />
+      <Team />
+      <Gallery />
       <Contact />
     </div>
   )
