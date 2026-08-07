@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-graphite: #0b0e13;
+  --color-surface: #12161d;
+  --color-surface-raised: #171c25;
+  --color-line: #2a2f38;
+  --color-paper: #e8e6de;
+  --color-paper-dim: #9a9890;
+  --color-amber: #ff8c3d;
+  --color-cyan: #3fb8af;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-graphite);
+  color: var(--color-paper);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::selection {
+  background: var(--color-amber);
+  color: var(--color-graphite);
+}
+
+/* HUD corner brackets - the recurring signature motif */
+.hud-frame {
+  position: relative;
+}
+.hud-frame::before,
+.hud-frame::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--color-amber);
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+.hud-frame::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1.5px solid;
+  border-left: 1.5px solid;
+}
+.hud-frame::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1.5px solid;
+  border-right: 1.5px solid;
+}
+.hud-frame:hover::before,
+.hud-frame:hover::after {
+  opacity: 1;
+  width: 20px;
+  height: 20px;
+}
+
+.mono-label {
+  font-family: var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* thin scrollbar to match instrument-panel feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-graphite);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-line);
+}
