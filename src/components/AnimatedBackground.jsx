@@ -108,10 +108,10 @@ export default function AnimatedBackground() {
       const radius = Math.max(width, height) * 0.95
       const angle = (t * 0.00016) % (Math.PI * 2)
       const grad = ctx.createConicGradient(angle, cx, cy)
-      grad.addColorStop(0, 'rgba(255,140,61,0.10)')
-      grad.addColorStop(0.05, 'rgba(255,140,61,0.025)')
-      grad.addColorStop(0.1, 'rgba(255,140,61,0)')
-      grad.addColorStop(1, 'rgba(255,140,61,0)')
+      grad.addColorStop(0, 'rgba(0,240,255,0.10)')
+      grad.addColorStop(0.05, 'rgba(0,240,255,0.025)')
+      grad.addColorStop(0.1, 'rgba(0,240,255,0)')
+      grad.addColorStop(1, 'rgba(0,240,255,0)')
       ctx.beginPath()
       ctx.moveTo(cx, cy)
       ctx.arc(cx, cy, radius, 0, Math.PI * 2)
@@ -144,11 +144,11 @@ export default function AnimatedBackground() {
         const a = (pulse - 0.6) / 0.4
         ctx.beginPath()
         ctx.arc(bx, by, 2.2, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(255,140,61,${a * 0.55})`
+        ctx.fillStyle = `rgba(0,240,255,${a * 0.55})`
         ctx.fill()
         ctx.beginPath()
         ctx.arc(bx, by, 5 + a * 5, 0, Math.PI * 2)
-        ctx.strokeStyle = `rgba(255,140,61,${a * 0.25})`
+        ctx.strokeStyle = `rgba(0,240,255,${a * 0.25})`
         ctx.lineWidth = 1
         ctx.stroke()
       })
@@ -203,7 +203,7 @@ export default function AnimatedBackground() {
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.r + (p.alpha > 0.5 ? 0.5 : 0), 0, Math.PI * 2)
         if (p.isAmber) {
-          ctx.fillStyle = `rgba(255,140,61,${p.alpha})`
+          ctx.fillStyle = `rgba(0,240,255,${p.alpha})`
         } else {
           ctx.fillStyle = `rgba(232,230,222,${p.alpha})`
         }
@@ -226,7 +226,7 @@ export default function AnimatedBackground() {
               ctx.lineTo(p2.x, p2.y)
               ctx.strokeStyle =
                 p1.isAmber || p2.isAmber
-                  ? `rgba(255,140,61,${lineAlpha})`
+                  ? `rgba(0,240,255,${lineAlpha})`
                   : `rgba(232,230,222,${lineAlpha})`
               ctx.lineWidth = 0.8
               ctx.stroke()

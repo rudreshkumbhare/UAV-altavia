@@ -53,7 +53,7 @@ export default function LoadingScreen({ onComplete }) {
           <span className="font-display font-semibold tracking-wide text-lg">ALTAVIA</span>
         </div>
 
-        <div className="w-56 h-px bg-line overflow-hidden">
+        <div className="w-72 h-[3px] bg-line rounded-full overflow-hidden">
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}

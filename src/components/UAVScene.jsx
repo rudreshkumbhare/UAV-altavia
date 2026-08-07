@@ -3,8 +3,8 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { Line } from '@react-three/drei'
 import * as THREE from 'three'
 
-const AMBER = '#ff8c3d'
-const CYAN = '#3fb8af'
+const AMBER = '#00F0FF'
+const CYAN = '#A855F7'
 const PAPER = '#e8e6de'
 
 function AltimeterRing({ radius, speed, color, segments = 4, opacity = 0.5 }) {

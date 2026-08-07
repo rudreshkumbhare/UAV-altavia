@@ -3,12 +3,12 @@ import { SectionEyebrow } from '../components/Telemetry'
 import TiltCard from '../components/TiltCard'
 
 const TEAM = [
-  { name: 'Renata Okoye', role: 'Flight Control Systems', code: 'FC' },
-  { name: 'Dmitri Volkov', role: 'Aerodynamics Lead', code: 'AD' },
-  { name: 'Priya Nathan', role: 'Computer Vision', code: 'CV' },
-  { name: 'Idris Kane', role: 'Embedded Systems', code: 'ES' },
-  { name: 'Lena Fischer', role: 'UAV Structural Design', code: 'UD' },
-  { name: 'Marco Silva', role: 'Comms & Navigation', code: 'CN' },
+  { name: 'Mayur', role: 'Flight Control Systems', code: 'FC' },
+  { name: 'Soumil', role: 'Aerodynamics Lead', code: 'AD' },
+  { name: 'Sharvari', role: 'Computer Vision', code: 'CV' },
+  { name: 'Samiksha', role: 'Embedded Systems', code: 'ES' },
+  { name: 'Prachi', role: 'UAV Structural Design', code: 'UD' },
+  { name: 'Rudresh', role: 'Comms & Navigation', code: 'CN' },
 ]
 
 const container = {
