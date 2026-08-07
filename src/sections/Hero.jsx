@@ -1,6 +1,7 @@
-import { motion } from 'framer-motion'
-import { Suspense, lazy } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import { Suspense, lazy, useRef } from 'react'
 import { CoordTag } from '../components/Telemetry'
+import MagneticButton from '../components/MagneticButton'
 
 const UAVScene = lazy(() => import('../components/UAVScene'))
 
@@ -17,17 +18,13 @@ const item = {
 }
 
 export default function Hero() {
+  const ref = useRef(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '28%'])
+  const opacity = useTransform(scrollYProgress, [0, 0.85], [1, 0])
+
   return (
-    <section id="top" className="relative min-h-screen flex items-center overflow-hidden pt-16">
-      {/* background grid */}
-      <div
-        className="absolute inset-0 opacity-[0.07] pointer-events-none"
-        style={{
-          backgroundImage:
-            'linear-gradient(to right, #e8e6de 1px, transparent 1px), linear-gradient(to bottom, #e8e6de 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
-        }}
-      />
+    <section ref={ref} id="top" className="relative min-h-screen flex items-center overflow-hidden pt-16">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-graphite pointer-events-none" />
 
       {/* 3D scene, right side on desktop, background on mobile */}
@@ -52,7 +49,7 @@ export default function Hero() {
         Drag to rotate
       </motion.div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 w-full">
+      <motion.div style={{ y, opacity }} className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 w-full">
         <motion.div variants={container} initial="hidden" animate="show" className="max-w-2xl">
           <motion.div variants={item} className="flex items-center gap-3 mb-6">
             <span className="w-1.5 h-1.5 bg-amber rounded-full animate-pulse" />
@@ -76,18 +73,20 @@ export default function Hero() {
           </motion.p>
 
           <motion.div variants={item} className="mt-10 flex flex-wrap items-center gap-4">
-            <a
+            <MagneticButton
+              as="a"
               href="#portfolio"
-              className="mono-label text-xs bg-amber text-graphite px-6 py-3.5 hover:bg-paper transition-colors"
+              className="btn-shine mono-label text-xs bg-amber text-graphite px-6 py-3.5 hover:bg-paper transition-colors inline-block"
             >
               View Portfolio
-            </a>
-            <a
+            </MagneticButton>
+            <MagneticButton
+              as="a"
               href="#about"
-              className="mono-label text-xs border border-line px-6 py-3.5 hover:border-amber hover:text-amber transition-colors"
+              className="mono-label text-xs border border-line px-6 py-3.5 hover:border-amber hover:text-amber transition-colors inline-block"
             >
               Mission Briefing
-            </a>
+            </MagneticButton>
           </motion.div>
 
           <motion.div variants={item} className="mt-16 flex flex-wrap gap-x-8 gap-y-3">
@@ -96,7 +95,7 @@ export default function Hero() {
             <CoordTag label="ALT" value="12,400 FT" />
           </motion.div>
         </motion.div>
-      </div>
+      </motion.div>
 
       <motion.div
         initial={{ opacity: 0 }}

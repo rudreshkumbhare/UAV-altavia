@@ -11,17 +11,21 @@ import Gallery from './sections/Gallery'
 import Contact from './sections/Contact'
 import LoadingScreen from './components/LoadingScreen'
 import CustomCursor from './components/CustomCursor'
+import AnimatedBackground from './components/AnimatedBackground'
+import ScrollProgress from './components/ScrollProgress'
 
 function App() {
   const [loading, setLoading] = useState(true)
 
   return (
     <>
+      <AnimatedBackground />
       <CustomCursor />
+      <ScrollProgress />
       <AnimatePresence>
         {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
       </AnimatePresence>
-      <div className="bg-graphite text-paper">
+      <div className="relative text-paper">
         <Navbar />
         <Hero />
         <About />

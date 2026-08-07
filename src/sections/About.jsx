@@ -9,14 +9,6 @@ const fadeUp = {
 export default function About() {
   return (
     <section id="about" className="relative py-28 md:py-36 border-t border-line overflow-hidden">
-      <div
-        className="absolute inset-0 opacity-[0.05] pointer-events-none"
-        style={{
-          backgroundImage:
-            'linear-gradient(to right, #e8e6de 1px, transparent 1px), linear-gradient(to bottom, #e8e6de 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
-        }}
-      />
       <div className="max-w-7xl mx-auto px-6 md:px-10 relative">
         <SectionEyebrow index="02" label="About Altavia" />
 

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { SectionEyebrow } from '../components/Telemetry'
+import MagneticButton from '../components/MagneticButton'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -72,13 +73,15 @@ export default function Contact() {
                 placeholder="What are you building?"
               />
             </div>
-            <button
+            <MagneticButton
+              as="button"
               type="submit"
-              className="mono-label text-xs bg-amber text-graphite px-6 py-3.5 hover:bg-paper transition-colors mt-2 flex items-center justify-center gap-2"
+              strength={0.2}
+              className="btn-shine mono-label text-xs bg-amber text-graphite px-6 py-3.5 hover:bg-paper transition-colors mt-2 flex items-center justify-center gap-2"
             >
               Send Transmission
               <ArrowUpRight className="w-3.5 h-3.5" />
-            </button>
+            </MagneticButton>
           </form>
         </motion.div>
       </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import MagneticButton from './MagneticButton'
 
 const LINKS = [
   { label: 'About', href: '#about' },
@@ -43,19 +44,21 @@ export default function Navbar() {
             <a
               key={l.href}
               href={l.href}
-              className="mono-label text-xs text-paper-dim hover:text-amber transition-colors"
+              className="nav-link mono-label text-xs text-paper-dim hover:text-amber transition-colors"
             >
               {l.label}
             </a>
           ))}
         </nav>
 
-        <a
+        <MagneticButton
+          as="a"
           href="#contact"
+          strength={0.25}
           className="hidden md:inline-block mono-label text-xs border border-line hover:border-amber hover:text-amber transition-colors px-4 py-2"
         >
           Initiate Contact
-        </a>
+        </MagneticButton>
 
         <button
           className="md:hidden flex flex-col gap-1.5 p-2"
