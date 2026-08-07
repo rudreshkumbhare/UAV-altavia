@@ -76,7 +76,7 @@ export default function Domains() {
   return (
     <section id="domains" className="relative py-28 md:py-36 border-t border-line">
       <div className="max-w-7xl mx-auto px-6 md:px-10">
-        <SectionEyebrow index="02" label="Core Engineering Domains" />
+        <SectionEyebrow index="03" label="Core Engineering Domains" />
 
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
           <h2 className="font-display text-4xl md:text-5xl font-medium max-w-xl leading-tight">
