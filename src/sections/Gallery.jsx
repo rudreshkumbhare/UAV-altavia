@@ -93,36 +93,49 @@ export default function Gallery() {
             }}
           />
 
-          <svg viewBox="0 0 900 400" className="w-full h-auto relative z-10" role="img" aria-label="Animated flight path map">
-            <circle cx="450" cy="200" r="180" fill="none" stroke="var(--color-line)" strokeWidth="1" opacity="0.5" />
-            <circle cx="450" cy="200" r="120" fill="none" stroke="var(--color-line)" strokeWidth="1" opacity="0.4" />
-            <circle cx="450" cy="200" r="60" fill="none" stroke="var(--color-line)" strokeWidth="1" opacity="0.3" />
+          {/* on mobile the panel is narrower than the 900x400 viewBox is comfortable at,
+              so render at a fixed legible size and let the wrapper scroll horizontally
+              instead of squashing the whole radar down to ~145px tall */}
+          <div className="relative -mx-4 px-4 md:mx-0 md:px-0 overflow-x-auto md:overflow-visible">
+            <div className="pointer-events-none absolute left-4 top-0 bottom-0 w-8 bg-gradient-to-r from-surface to-transparent md:hidden" />
+            <div className="pointer-events-none absolute right-4 top-0 bottom-0 w-8 bg-gradient-to-l from-surface to-transparent md:hidden" />
+            <svg
+              viewBox="0 0 900 400"
+              className="h-[280px] w-auto min-w-[640px] md:h-auto md:w-full md:min-w-0 relative z-10"
+              role="img"
+              aria-label="Animated flight path map"
+            >
+              <circle cx="450" cy="200" r="180" fill="none" stroke="var(--color-line)" strokeWidth="1" opacity="0.5" />
+              <circle cx="450" cy="200" r="120" fill="none" stroke="var(--color-line)" strokeWidth="1" opacity="0.4" />
+              <circle cx="450" cy="200" r="60" fill="none" stroke="var(--color-line)" strokeWidth="1" opacity="0.3" />
 
-            {ROUTES.map((r, i) => (
-              <g
-                key={r.id}
-                onMouseEnter={() => setHovered(r.id)}
-                onMouseLeave={() => setHovered(null)}
-                className="cursor-pointer"
-              >
-                <path d={toPathD(r.p0, r.p1, r.p2)} fill="none" stroke={r.color} strokeWidth="1" opacity="0.15" />
-                <motion.path
-                  d={toPathD(r.p0, r.p1, r.p2)}
-                  fill="none"
-                  stroke={r.color}
-                  strokeWidth={hovered === r.id ? 2.5 : 1.5}
-                  strokeLinecap="round"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  whileInView={{ pathLength: 1, opacity: hovered && hovered !== r.id ? 0.3 : 0.9 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1.6, delay: i * 0.25, ease: [0.16, 1, 0.3, 1] }}
-                />
-                <RouteMarker route={r} />
-                <circle cx={r.p0[0]} cy={r.p0[1]} r={3} fill={r.color} opacity="0.6" />
-                <circle cx={r.p2[0]} cy={r.p2[1]} r={3} fill={r.color} opacity="0.6" />
-              </g>
-            ))}
-          </svg>
+              {ROUTES.map((r, i) => (
+                <g
+                  key={r.id}
+                  onMouseEnter={() => setHovered(r.id)}
+                  onMouseLeave={() => setHovered(null)}
+                  className="cursor-pointer"
+                >
+                  <path d={toPathD(r.p0, r.p1, r.p2)} fill="none" stroke={r.color} strokeWidth="1" opacity="0.15" />
+                  <motion.path
+                    d={toPathD(r.p0, r.p1, r.p2)}
+                    fill="none"
+                    stroke={r.color}
+                    strokeWidth={hovered === r.id ? 2.5 : 1.5}
+                    strokeLinecap="round"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    whileInView={{ pathLength: 1, opacity: hovered && hovered !== r.id ? 0.3 : 0.9 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.6, delay: i * 0.25, ease: [0.16, 1, 0.3, 1] }}
+                  />
+                  <RouteMarker route={r} />
+                  <circle cx={r.p0[0]} cy={r.p0[1]} r={3} fill={r.color} opacity="0.6" />
+                  <circle cx={r.p2[0]} cy={r.p2[1]} r={3} fill={r.color} opacity="0.6" />
+                </g>
+              ))}
+            </svg>
+          </div>
+          <div className="mono-label text-[10px] text-paper-dim mt-3 md:hidden">← Swipe to explore the full flight map →</div>
 
           <div className="relative z-10 flex flex-wrap gap-x-8 gap-y-3 mt-6 pt-6 border-t border-line">
             {ROUTES.map((r) => (

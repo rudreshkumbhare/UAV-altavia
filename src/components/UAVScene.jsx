@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react'
+import { useRef, useMemo, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Line } from '@react-three/drei'
 import * as THREE from 'three'
@@ -147,14 +147,30 @@ function UAVBody() {
 // tiny shared pointer state without extra deps
 function useThreeState() {
   const pointer = useRef({ x: 0, y: 0 })
-  useMemo(() => {
-    if (typeof window !== 'undefined') {
-      window.addEventListener('pointermove', (e) => {
-        pointer.current.x = (e.clientX / window.innerWidth) * 2 - 1
-        pointer.current.y = (e.clientY / window.innerHeight) * 2 - 1
-      })
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const setFromClient = (clientX, clientY) => {
+      pointer.current.x = (clientX / window.innerWidth) * 2 - 1
+      pointer.current.y = (clientY / window.innerHeight) * 2 - 1
+    }
+
+    const onPointerMove = (e) => setFromClient(e.clientX, e.clientY)
+    // touch devices don't fire pointermove while idle, so mirror it from touchmove
+    const onTouchMove = (e) => {
+      if (e.touches?.[0]) setFromClient(e.touches[0].clientX, e.touches[0].clientY)
+    }
+
+    window.addEventListener('pointermove', onPointerMove)
+    window.addEventListener('touchmove', onTouchMove, { passive: true })
+
+    return () => {
+      window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('touchmove', onTouchMove)
     }
   }, [])
+
   return { pointer }
 }
 

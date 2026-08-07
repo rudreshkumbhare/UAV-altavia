@@ -71,21 +71,25 @@ export default function Portfolio() {
 
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-10">
           {/* selector list */}
-          <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
-            {CRAFT.map((c) => (
-              <button
-                key={c.id}
-                onClick={() => setActive(c.id)}
-                className={`text-left px-5 py-4 border transition-colors whitespace-nowrap lg:whitespace-normal shrink-0 ${
-                  active === c.id
-                    ? 'border-amber bg-surface'
-                    : 'border-line hover:border-paper-dim'
-                }`}
-              >
-                <div className="mono-label text-[10px] text-paper-dim mb-1">{c.class}</div>
-                <div className="font-display text-base font-medium">{c.name}</div>
-              </button>
-            ))}
+          <div className="relative">
+            <div className="pointer-events-none absolute right-0 top-0 bottom-2 w-10 bg-gradient-to-l from-graphite to-transparent lg:hidden" />
+            <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
+              {CRAFT.map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => setActive(c.id)}
+                  className={`text-left px-5 py-4 border transition-colors whitespace-nowrap lg:whitespace-normal shrink-0 ${
+                    active === c.id
+                      ? 'border-amber bg-surface'
+                      : 'border-line hover:border-paper-dim'
+                  }`}
+                >
+                  <div className="mono-label text-[10px] text-paper-dim mb-1">{c.class}</div>
+                  <div className="font-display text-base font-medium">{c.name}</div>
+                </button>
+              ))}
+            </div>
+            <div className="mono-label text-[10px] text-paper-dim mt-2 lg:hidden">← Swipe for all four platforms →</div>
           </div>
 
           {/* detail panel */}

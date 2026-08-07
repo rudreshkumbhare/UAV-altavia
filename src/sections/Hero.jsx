@@ -31,11 +31,14 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-graphite pointer-events-none" />
 
       {/* 3D scene, right side on desktop, background on mobile */}
-      <div className="absolute inset-0 md:inset-y-0 md:right-0 md:left-[42%] opacity-90">
+      <div className="absolute inset-0 md:inset-y-0 md:right-0 md:left-[42%] opacity-40 md:opacity-90">
         <Suspense fallback={null}>
           <UAVScene />
         </Suspense>
       </div>
+
+      {/* mobile-only scrim so the wireframe UAV never fights the headline for contrast */}
+      <div className="absolute inset-0 bg-gradient-to-b from-graphite via-graphite/80 to-graphite md:hidden pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 w-full">
         <motion.div variants={container} initial="hidden" animate="show" className="max-w-2xl">
@@ -75,7 +78,7 @@ export default function Hero() {
             </a>
           </motion.div>
 
-          <motion.div variants={item} className="mt-16 flex gap-8">
+          <motion.div variants={item} className="mt-16 flex flex-wrap gap-x-8 gap-y-3">
             <CoordTag label="LAT" value="37.4275° N" />
             <CoordTag label="LON" value="122.1697° W" />
             <CoordTag label="ALT" value="12,400 FT" />
