@@ -39,8 +39,8 @@ export default function Team() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-line border border-line"
         >
           {TEAM.map((t) => (
-            <motion.div key={t.name} variants={item}>
-              <TiltCard className="hud-frame group bg-graphite p-8 flex flex-col gap-6 hover:bg-surface transition-colors duration-300">
+            <motion.div key={t.name} variants={item} className="h-full">
+              <TiltCard className="h-full hud-frame group bg-graphite p-8 flex flex-col gap-6 hover:bg-surface transition-colors duration-300">
                 <div className="flex items-center justify-between">
                   <div className="w-14 h-14 rounded-full border border-line flex items-center justify-center font-display text-lg group-hover:border-amber transition-colors">
                     {t.name.split(' ').map((n) => n[0]).join('')}

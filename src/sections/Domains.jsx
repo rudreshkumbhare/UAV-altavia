@@ -101,8 +101,8 @@ export default function Domains() {
           {DOMAINS.map((d) => {
             const Icon = d.icon
             return (
-              <motion.div key={d.code} variants={card}>
-                <TiltCard className="hud-frame group bg-graphite p-7 flex flex-col gap-5 hover:bg-surface transition-colors duration-300">
+              <motion.div key={d.code} variants={card} className="h-full">
+                <TiltCard className="h-full hud-frame group bg-graphite p-7 flex flex-col gap-5 hover:bg-surface transition-colors duration-300">
                   <div className="flex items-start justify-between">
                     <Icon
                       className="w-6 h-6 text-amber group-hover:scale-110 transition-transform duration-300"
