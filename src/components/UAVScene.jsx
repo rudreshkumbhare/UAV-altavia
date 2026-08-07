@@ -73,49 +73,72 @@ function TickMarks({ radius, count, color }) {
   )
 }
 
+// Flat delta-wing UAV silhouette, drawn as a 2D shape then given slight depth.
+// Reads clearly as an aircraft outline from any angle instead of abstract boxes.
+function buildDeltaShape() {
+  const s = new THREE.Shape()
+  s.moveTo(0, 1.1) // nose tip
+  s.lineTo(0.16, 0.55)
+  s.lineTo(0.95, -0.55) // right wingtip
+  s.lineTo(0.62, -0.55)
+  s.lineTo(0.5, -0.35)
+  s.lineTo(0.16, -0.35)
+  s.lineTo(0.16, -0.9) // right tail fin base
+  s.lineTo(0.05, -0.55)
+  s.lineTo(0, -0.62)
+  s.lineTo(-0.05, -0.55)
+  s.lineTo(-0.16, -0.9) // left tail fin base
+  s.lineTo(-0.16, -0.35)
+  s.lineTo(-0.5, -0.35)
+  s.lineTo(-0.62, -0.55)
+  s.lineTo(-0.95, -0.55) // left wingtip
+  s.lineTo(-0.16, 0.55)
+  s.closePath()
+  return s
+}
+
 function UAVBody() {
   const group = useRef()
   const { pointer } = useThreeState()
 
+  const geometry = useMemo(() => {
+    const shape = buildDeltaShape()
+    return new THREE.ExtrudeGeometry(shape, {
+      depth: 0.05,
+      bevelEnabled: false,
+      curveSegments: 1,
+    })
+  }, [])
+
+  const edges = useMemo(() => new THREE.EdgesGeometry(geometry, 20), [geometry])
+
   useFrame((state, delta) => {
-    group.current.rotation.y += delta * 0.25
-    // subtle mouse parallax tilt
-    const targetX = pointer.current.y * 0.15
+    group.current.rotation.y += delta * 0.3
+    const targetX = pointer.current.y * 0.2 + 0.35
     const targetZ = -pointer.current.x * 0.15
     group.current.rotation.x += (targetX - group.current.rotation.x) * 0.03
     group.current.rotation.z += (targetZ - group.current.rotation.z) * 0.03
     group.current.position.y = Math.sin(state.clock.elapsedTime * 0.6) * 0.08
   })
 
-  const edgeMat = { color: AMBER, transparent: true, opacity: 0.9 }
-  const edgeMatDim = { color: PAPER, transparent: true, opacity: 0.35 }
-
   return (
-    <group ref={group} scale={1.35}>
-      {/* fuselage */}
-      <mesh>
-        <capsuleGeometry args={[0.14, 0.9, 4, 8]} />
-        <meshBasicMaterial color={PAPER} wireframe transparent opacity={0.5} />
+    <group ref={group} scale={1.15} rotation={[0.35, 0, 0]}>
+      <mesh geometry={geometry}>
+        <meshBasicMaterial color={AMBER} transparent opacity={0.08} side={THREE.DoubleSide} />
       </mesh>
-      {/* main wing */}
-      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
-        <boxGeometry args={[2.1, 0.03, 0.32]} />
-        <meshBasicMaterial color={AMBER} wireframe transparent opacity={0.85} />
+      <lineSegments geometry={edges}>
+        <lineBasicMaterial color={AMBER} transparent opacity={0.95} />
+      </lineSegments>
+      {/* center spine line for extra definition */}
+      <Line points={[[0, 1.1, 0.025], [0, -0.62, 0.025]]} color={PAPER} transparent opacity={0.5} lineWidth={1} />
+      {/* small nav-light points at wingtips */}
+      <mesh position={[0.95, -0.55, 0.025]}>
+        <sphereGeometry args={[0.025, 8, 8]} />
+        <meshBasicMaterial color={CYAN} />
       </mesh>
-      {/* tail wing */}
-      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, -0.02, -0.62]}>
-        <boxGeometry args={[0.7, 0.02, 0.16]} />
-        <meshBasicMaterial color={CYAN} wireframe transparent opacity={0.8} />
-      </mesh>
-      {/* vertical stabilizer */}
-      <mesh position={[0, 0.14, -0.62]}>
-        <boxGeometry args={[0.02, 0.3, 0.18]} />
-        <meshBasicMaterial color={CYAN} wireframe transparent opacity={0.8} />
-      </mesh>
-      {/* nose cone */}
-      <mesh position={[0, 0, 0.55]}>
-        <coneGeometry args={[0.13, 0.32, 8]} rotation={[Math.PI / 2, 0, 0]} />
-        <meshBasicMaterial color={PAPER} wireframe transparent opacity={0.5} />
+      <mesh position={[-0.95, -0.55, 0.025]}>
+        <sphereGeometry args={[0.025, 8, 8]} />
+        <meshBasicMaterial color={CYAN} />
       </mesh>
     </group>
   )
