@@ -35,7 +35,7 @@ export default function Hero() {
             <span className="mono-label text-xs text-amber">Systems Online</span>
           </motion.div>
 
-          <motion.div variants={item} className="text-center">
+          <div className="text-center">
             {decrypted ? (
               <motion.h1
                 initial={{ opacity: 0 }}
@@ -72,7 +72,7 @@ export default function Hero() {
                 />
               </h1>
             )}
-          </motion.div>
+          </div>
 
           <motion.p variants={item} className="mt-6 text-paper-dim text-base md:text-lg max-w-lg leading-relaxed text-center">
             ALTAVIA designs autonomous flight systems — from airframe to flight

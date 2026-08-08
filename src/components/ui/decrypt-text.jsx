@@ -1,7 +1,18 @@
 import * as React from "react";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
-/* Decrypt Text — adapted from Motiq (https://motiq.dev/components/decrypt-text).
-   MIT licensed. Uses inline styles for Vite/TW4 compatibility. */
+/* Decrypt Text — from Motiq (https://motiq.dev/components/decrypt-text).
+   MIT licensed. Zero runtime dependencies. */
+
+/* -------------------------------------------------------------------------- */
+/* Motiq design tokens                                                        */
+/* -------------------------------------------------------------------------- */
+const MOTIQ_TOKENS = "@layer motiq{:root{--motiq-accent:#315fea;--motiq-accent-text:#244fd1;--motiq-bg:#f7f9fc;--motiq-border:#dce4ef;--motiq-border-strong:#c5d1e1;--motiq-fg:#101828;--motiq-fg-secondary:#344054;--motiq-muted:#667085;--motiq-secondary-accent:#009fb3;--motiq-shadow-md:0 8px 24px -6px rgba(16, 24, 40, 0.10);--motiq-success:#128a55;--motiq-surface:#ffffff;--motiq-surface-2:#f8fafd}}@layer motiq{.dark,[data-theme=\"dark\"]{--motiq-accent:#4f7cff;--motiq-accent-text:#7f9fff;--motiq-bg:#080c14;--motiq-border:#263449;--motiq-border-strong:#354863;--motiq-fg:#f8fafc;--motiq-fg-secondary:#cbd5e1;--motiq-muted:#9caabd;--motiq-secondary-accent:#22c7d9;--motiq-shadow-md:0 8px 24px -6px rgba(0, 3, 10, 0.62);--motiq-success:#32d583;--motiq-surface:#111827;--motiq-surface-2:#192337}}";
+
+function cn(...inputs) {
+  return twMerge(clsx(inputs));
+}
 
 /* ---- motion primitives ---- */
 
@@ -49,6 +60,7 @@ function useVisibilityPause(ref, { threshold = 0.1 } = {}) {
 /* -------------------------------------------------------------------------- */
 
 const POOL_DISPLAY = "#%&@$?!*+=/{}[]<>~^";
+const POOL_TERMINAL = "abcdef0123456789$#%&*+=/|_~";
 const HOVER_COOLDOWN = 1500;
 const CYCLE_SPREAD = 35;
 const FLASH_MS = 420;
@@ -67,9 +79,9 @@ function makeRng(seed) {
 /* Component                                                                  */
 /* -------------------------------------------------------------------------- */
 
-let _scopeCounter = 0;
+let _scopeId = 0;
 
-export function DecryptText({
+function DecryptTextBase({
   text,
   glyphs,
   speed = 45,
@@ -85,7 +97,6 @@ export function DecryptText({
   reducedMotion,
   onDecrypted,
   className,
-  style: userStyle,
   ...rest
 }) {
   const rootRef = React.useRef(null);
@@ -98,7 +109,11 @@ export function DecryptText({
   const onDecryptedRef = React.useRef(onDecrypted);
   onDecryptedRef.current = onDecrypted;
 
-  const scopeRef = React.useRef(`mk-dt-${++_scopeCounter}`);
+  // StrictMode-safe unique scope (useId runs twice in dev, counter is stable)
+  const scopeRef = React.useRef(null);
+  if (scopeRef.current === null) {
+    scopeRef.current = `mk-dt-${++_scopeId}`;
+  }
   const scope = scopeRef.current;
 
   const systemReduced = useReducedMotion();
@@ -110,7 +125,7 @@ export function DecryptText({
 
   const visible = useVisibilityPause(rootRef, { threshold: 0.12 });
 
-  const pool = glyphs && glyphs.length > 0 ? glyphs : POOL_DISPLAY;
+  const pool = glyphs && glyphs.length > 0 ? glyphs : variant === "terminal" ? POOL_TERMINAL : POOL_DISPLAY;
 
   const words = React.useMemo(() => {
     const out = [];
@@ -125,6 +140,8 @@ export function DecryptText({
     }
     return out;
   }, [text]);
+
+  const total = React.useMemo(() => words.reduce((n, w) => n + w.length, 0), [words]);
 
   const stop = React.useCallback(() => {
     if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
@@ -196,7 +213,9 @@ export function DecryptText({
     rafRef.current = requestAnimationFrame(frame);
   }, [jitter, loop, pool, seed, speed, stagger, startDelay, stop]);
 
-  React.useLayoutEffect(() => {
+  // Use useEffect (NOT useLayoutEffect) to avoid StrictMode double-fire issues.
+  // The cleanup properly cancels any in-flight animation before re-starting.
+  React.useEffect(() => {
     if (reduceNow) {
       stop();
       resolveAll();
@@ -212,7 +231,7 @@ export function DecryptText({
     }
     if (!playedRef.current) {
       play();
-      return;
+      return () => stop();
     }
     if (loop !== false && loop > 0 && rafRef.current == null && timerRef.current == null) {
       timerRef.current = setTimeout(() => {
@@ -220,6 +239,7 @@ export function DecryptText({
         play();
       }, Math.min(loop, 3000));
     }
+    return () => stop();
   }, [loop, play, reduceNow, resolveAll, stop, trigger, visible]);
 
   React.useEffect(() => stop, [stop]);
@@ -231,17 +251,22 @@ export function DecryptText({
     play();
   }, [play, reduceNow, retriggerOnHover]);
 
-  /* Colors for scramble vs locked chars */
-  const scrambleColor = "var(--color-paper-dim, #9a9890)";
-  const lockedColor = "var(--color-paper, #e8e6de)";
-  const accentColor = "var(--color-amber, #ff8c3d)";
+  const terminal = variant === "terminal";
+  const scrambleColor = terminal
+    ? "color-mix(in oklab, var(--motiq-muted, #9caabd) 80%, var(--motiq-secondary-accent, #22c7d9))"
+    : "var(--motiq-muted, #9caabd)";
+  const lockedColor = terminal
+    ? "color-mix(in oklab, var(--motiq-fg, #f8fafc) 84%, var(--motiq-muted, #9caabd))"
+    : "var(--motiq-fg, #f8fafc)";
 
   const css = `
 .${scope} [data-mk-char]{color:${lockedColor};}
 .${scope} [data-mk-char][data-state="scramble"]{color:${scrambleColor};}
 .${scope} [data-mk-char][data-state="lock"]{color:${lockedColor};animation:${scope}-flash ${FLASH_MS}ms cubic-bezier(.2,0,0,1);}
-@keyframes ${scope}-flash{0%{color:${accentColor};text-shadow:0 0 24px ${accentColor};}100%{text-shadow:0 0 0 transparent;}}
-@media (prefers-reduced-motion: reduce){.${scope} [data-mk-char][data-state="lock"]{animation:none;}}
+@keyframes ${scope}-flash{0%{color:var(--motiq-accent-text, #7f9fff);text-shadow:0 0 24px color-mix(in oklab, var(--motiq-accent, #4f7cff) 70%, transparent);}100%{text-shadow:0 0 0 transparent;}}
+.${scope} [data-mk-caret]{animation:${scope}-caret 1.1s steps(1) infinite;}
+@keyframes ${scope}-caret{50%{opacity:0;}}
+@media (prefers-reduced-motion: reduce){.${scope} [data-mk-char][data-state="lock"],.${scope} [data-mk-caret]{animation:none;}}
 `;
 
   let cursor = -1;
@@ -277,30 +302,67 @@ export function DecryptText({
     <Tag
       ref={rootRef}
       data-motion={reduce ? "static" : "animated"}
+      data-variant={variant}
+      data-chars={total}
       onPointerEnter={onPointerEnter}
-      className={className}
-      style={{ width: "100%", display: "block", ...userStyle }}
+      className={cn(
+        "w-full",
+        terminal
+          ? "block font-mono leading-relaxed"
+          : "block font-extrabold",
+        className,
+      )}
+      style={{ display: "block", width: "100%" }}
       {...rest}
     >
       <style>{css}</style>
-      {/* Screen-reader accessible text */}
       <span style={{
-        position: "absolute",
-        width: "1px",
-        height: "1px",
-        padding: 0,
-        margin: "-1px",
-        overflow: "hidden",
-        clip: "rect(0,0,0,0)",
-        whiteSpace: "nowrap",
-        borderWidth: 0,
-      }}>
-        {text}
-      </span>
-      <span className={scope} style={{ display: "block" }}>
-        {glyphLayer}
-      </span>
+        position: "absolute", width: "1px", height: "1px", padding: 0,
+        margin: "-1px", overflow: "hidden", clip: "rect(0,0,0,0)",
+        whiteSpace: "nowrap", borderWidth: 0
+      }}>{text}</span>
+      {terminal ? (
+        <span
+          className={scope}
+          style={{
+            display: "inline-flex", maxWidth: "100%", flexWrap: "wrap",
+            alignItems: "baseline", gap: "0 0.25rem", borderRadius: "10px",
+            border: "1px solid var(--motiq-border, #263449)",
+            padding: "0.75rem 1rem", verticalAlign: "middle",
+            background: "color-mix(in oklab, var(--motiq-surface, #111827) 88%, transparent)",
+            boxShadow: "var(--motiq-shadow-md, 0 12px 32px rgba(0,3,10,.5))",
+          }}
+        >
+          <span aria-hidden="true" style={{ color: "var(--motiq-success, #32d583)" }}>
+            $
+          </span>
+          {glyphLayer}
+          <span
+            aria-hidden="true"
+            data-mk-caret=""
+            style={{
+              display: "inline-block", height: "1.05em", width: "0.55em",
+              verticalAlign: "text-bottom",
+              background: "var(--motiq-success, #32d583)",
+              animation: `${scope}-caret 1.1s steps(1) infinite`,
+            }}
+          />
+        </span>
+      ) : (
+        <span className={scope} style={{ display: "block" }}>{glyphLayer}</span>
+      )}
     </Tag>
+  );
+}
+
+DecryptTextBase.displayName = "DecryptText";
+
+export function DecryptText(props) {
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: MOTIQ_TOKENS }} />
+      <DecryptTextBase {...props} />
+    </>
   );
 }
 
