@@ -1,31 +1,10 @@
-"use client";
-
 import * as React from "react";
-import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
 
-/* Decrypt Text — from Motiq (https://motiq.dev/components/decrypt-text).
-   MIT licensed. Zero runtime dependencies. */
+/* Decrypt Text — adapted from Motiq (https://motiq.dev/components/decrypt-text).
+   MIT licensed. Uses inline styles for Vite/TW4 compatibility. */
 
-/* -------------------------------------------------------------------------- */
-/* Motiq design tokens                                                        */
-/* -------------------------------------------------------------------------- */
-/* Rendered with the component, in a low cascade layer, so your own
-   `:root { --motiq-*: … }` always wins. Move it to globals.css to drop it. */
-const MOTIQ_TOKENS = "@layer motiq{:root{--motiq-accent:#315fea;--motiq-accent-text:#244fd1;--motiq-bg:#f7f9fc;--motiq-border:#dce4ef;--motiq-border-strong:#c5d1e1;--motiq-fg:#101828;--motiq-fg-secondary:#344054;--motiq-muted:#667085;--motiq-secondary-accent:#009fb3;--motiq-shadow-md:0 8px 24px -6px rgba(16, 24, 40, 0.10);--motiq-success:#128a55;--motiq-surface:#ffffff;--motiq-surface-2:#f8fafd}}@layer motiq{.dark,[data-theme=\"dark\"]{--motiq-accent:#4f7cff;--motiq-accent-text:#7f9fff;--motiq-bg:#080c14;--motiq-border:#263449;--motiq-border-strong:#354863;--motiq-fg:#f8fafc;--motiq-fg-secondary:#cbd5e1;--motiq-muted:#9caabd;--motiq-secondary-accent:#22c7d9;--motiq-shadow-md:0 8px 24px -6px rgba(0, 3, 10, 0.62);--motiq-success:#32d583;--motiq-surface:#111827;--motiq-surface-2:#192337}}";
+/* ---- motion primitives ---- */
 
-/** Merge Tailwind class names; later/consumer classes win on conflict. */
-function cn(...inputs) {
-  return twMerge(clsx(inputs));
-}
-
-/* ---- motion primitives (inlined from @motiq/primitives) ---- */
-
-/**
- * SSR-safe `prefers-reduced-motion`. Reads synchronously on the client so a
- * reduced-motion user never sees a frame of motion; the value is never rendered
- * into markup, so there is no hydration-mismatch risk.
- */
 function useReducedMotion() {
   const [reduced, setReduced] = React.useState(
     () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches,
@@ -40,15 +19,7 @@ function useReducedMotion() {
   return reduced;
 }
 
-/**
- * Returns whether the referenced element is currently worth animating — i.e.
- * on-screen AND the tab is visible. Use it to pause per-frame work, autoplay,
- * or streaming when the component scrolls away or the tab is backgrounded.
- */
-function useVisibilityPause(
-  ref,
-  { threshold = 0.1 } = {},
-) {
+function useVisibilityPause(ref, { threshold = 0.1 } = {}) {
   const [onScreen, setOnScreen] = React.useState(true);
   const [tabVisible, setTabVisible] = React.useState(true);
 
@@ -78,15 +49,10 @@ function useVisibilityPause(
 /* -------------------------------------------------------------------------- */
 
 const POOL_DISPLAY = "#%&@$?!*+=/{}[]<>~^";
-const POOL_TERMINAL = "abcdef0123456789$#%&*+=/|_~";
-/** Cooldown before a hover can restart a run (ms). */
 const HOVER_COOLDOWN = 1500;
-/** Extra ms added to `speed` for the per-char cycle jitter ceiling. */
 const CYCLE_SPREAD = 35;
-/** Accent flash duration on lock-in (ms) — matches the prototype. */
 const FLASH_MS = 420;
 
-/** mulberry32 — no Math.random at render or module scope (SSR-stable). */
 function makeRng(seed) {
   let a = seed >>> 0;
   return () => {
@@ -101,7 +67,9 @@ function makeRng(seed) {
 /* Component                                                                  */
 /* -------------------------------------------------------------------------- */
 
-function DecryptTextBase({
+let _scopeCounter = 0;
+
+export function DecryptText({
   text,
   glyphs,
   speed = 45,
@@ -117,6 +85,7 @@ function DecryptTextBase({
   reducedMotion,
   onDecrypted,
   className,
+  style: userStyle,
   ...rest
 }) {
   const rootRef = React.useRef(null);
@@ -129,8 +98,8 @@ function DecryptTextBase({
   const onDecryptedRef = React.useRef(onDecrypted);
   onDecryptedRef.current = onDecrypted;
 
-  const uid = React.useId().replace(/[^a-zA-Z0-9]/g, "");
-  const scope = `mk-dt-${uid}`;
+  const scopeRef = React.useRef(`mk-dt-${++_scopeCounter}`);
+  const scope = scopeRef.current;
 
   const systemReduced = useReducedMotion();
   const [mounted, setMounted] = React.useState(false);
@@ -141,7 +110,7 @@ function DecryptTextBase({
 
   const visible = useVisibilityPause(rootRef, { threshold: 0.12 });
 
-  const pool = glyphs && glyphs.length > 0 ? glyphs : variant === "terminal" ? POOL_TERMINAL : POOL_DISPLAY;
+  const pool = glyphs && glyphs.length > 0 ? glyphs : POOL_DISPLAY;
 
   const words = React.useMemo(() => {
     const out = [];
@@ -156,8 +125,6 @@ function DecryptTextBase({
     }
     return out;
   }, [text]);
-
-  const total = React.useMemo(() => words.reduce((n, w) => n + w.length, 0), [words]);
 
   const stop = React.useCallback(() => {
     if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
@@ -264,30 +231,25 @@ function DecryptTextBase({
     play();
   }, [play, reduceNow, retriggerOnHover]);
 
-  const terminal = variant === "terminal";
-  const scrambleColor = terminal
-    ? "color-mix(in oklab, var(--motiq-muted, #9caabd) 80%, var(--motiq-secondary-accent, #22c7d9))"
-    : "var(--motiq-muted, #9caabd)";
-  const lockedColor = terminal
-    ? "color-mix(in oklab, var(--motiq-fg, #f8fafc) 84%, var(--motiq-muted, #9caabd))"
-    : "var(--motiq-fg, #f8fafc)";
+  /* Colors for scramble vs locked chars */
+  const scrambleColor = "var(--color-paper-dim, #9a9890)";
+  const lockedColor = "var(--color-paper, #e8e6de)";
+  const accentColor = "var(--color-amber, #ff8c3d)";
 
   const css = `
 .${scope} [data-mk-char]{color:${lockedColor};}
 .${scope} [data-mk-char][data-state="scramble"]{color:${scrambleColor};}
 .${scope} [data-mk-char][data-state="lock"]{color:${lockedColor};animation:${scope}-flash ${FLASH_MS}ms cubic-bezier(.2,0,0,1);}
-@keyframes ${scope}-flash{0%{color:var(--motiq-accent-text, #7f9fff);text-shadow:0 0 24px color-mix(in oklab, var(--motiq-accent, #4f7cff) 70%, transparent);}100%{text-shadow:0 0 0 transparent;}}
-.${scope} [data-mk-caret]{animation:${scope}-caret 1.1s steps(1) infinite;}
-@keyframes ${scope}-caret{50%{opacity:0;}}
-@media (prefers-reduced-motion: reduce){.${scope} [data-mk-char][data-state="lock"],.${scope} [data-mk-caret]{animation:none;}}
+@keyframes ${scope}-flash{0%{color:${accentColor};text-shadow:0 0 24px ${accentColor};}100%{text-shadow:0 0 0 transparent;}}
+@media (prefers-reduced-motion: reduce){.${scope} [data-mk-char][data-state="lock"]{animation:none;}}
 `;
 
   let cursor = -1;
   const glyphLayer = (
-    <span aria-hidden="true" className="select-none">
+    <span aria-hidden="true" style={{ userSelect: "none" }}>
       {words.map((word, w) => (
         <React.Fragment key={w}>
-          <span className="inline-block whitespace-pre">
+          <span style={{ display: "inline-block", whiteSpace: "pre" }}>
             {word.map((item) => {
               cursor += 1;
               const at = cursor;
@@ -315,58 +277,30 @@ function DecryptTextBase({
     <Tag
       ref={rootRef}
       data-motion={reduce ? "static" : "animated"}
-      data-variant={variant}
-      data-chars={total}
       onPointerEnter={onPointerEnter}
-      className={cn(
-        "w-full",
-        terminal
-          ? "block font-mono text-[clamp(0.78rem,2.4vw,1rem)] leading-relaxed"
-          : "block text-balance text-[clamp(1.6rem,5.2vw,3.3rem)] font-extrabold leading-[1.15] tracking-[-0.02em]",
-        className,
-      )}
+      className={className}
+      style={{ width: "100%", display: "block", ...userStyle }}
       {...rest}
     >
       <style>{css}</style>
-      <span className="sr-only">{text}</span>
-      {terminal ? (
-        <span
-          className={cn(
-            scope,
-            "inline-flex max-w-full flex-wrap items-baseline gap-x-1 rounded-[10px] border px-4 py-3 align-middle",
-          )}
-          style={{
-            borderColor: "var(--motiq-border, #263449)",
-            background: "color-mix(in oklab, var(--motiq-surface, #111827) 88%, transparent)",
-            boxShadow: "var(--motiq-shadow-md, 0 12px 32px rgba(0,3,10,.5))",
-          }}
-        >
-          <span aria-hidden="true" style={{ color: "var(--motiq-success, #32d583)" }}>
-            $
-          </span>
-          {glyphLayer}
-          <span
-            aria-hidden="true"
-            data-mk-caret=""
-            className="inline-block h-[1.05em] w-[0.55em] align-text-bottom"
-            style={{ background: "var(--motiq-success, #32d583)" }}
-          />
-        </span>
-      ) : (
-        <span className={cn(scope, "block")}>{glyphLayer}</span>
-      )}
+      {/* Screen-reader accessible text */}
+      <span style={{
+        position: "absolute",
+        width: "1px",
+        height: "1px",
+        padding: 0,
+        margin: "-1px",
+        overflow: "hidden",
+        clip: "rect(0,0,0,0)",
+        whiteSpace: "nowrap",
+        borderWidth: 0,
+      }}>
+        {text}
+      </span>
+      <span className={scope} style={{ display: "block" }}>
+        {glyphLayer}
+      </span>
     </Tag>
-  );
-}
-
-DecryptTextBase.displayName = "DecryptText";
-
-export function DecryptText(props) {
-  return (
-    <>
-      <style dangerouslySetInnerHTML={{ __html: MOTIQ_TOKENS }} />
-      <DecryptTextBase {...props} />
-    </>
   );
 }
 
