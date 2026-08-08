@@ -1,8 +1,9 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { CoordTag } from '../components/Telemetry'
 import MagneticButton from '../components/MagneticButton'
 import GradientShimmer from '../components/ui/gradient-shimmer'
+import { DecryptText } from '../components/ui/decrypt-text'
 
 const container = {
   hidden: {},
@@ -18,6 +19,7 @@ const item = {
 
 export default function Hero() {
   const ref = useRef(null)
+  const [decrypted, setDecrypted] = useState(false)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '28%'])
   const opacity = useTransform(scrollYProgress, [0, 0.85], [1, 0])
@@ -33,46 +35,44 @@ export default function Hero() {
             <span className="mono-label text-xs text-amber">Systems Online</span>
           </motion.div>
 
-          <motion.h1
-            variants={item}
-            className="font-display text-5xl sm:text-6xl md:text-7xl leading-[1.05] font-medium tracking-tight text-center"
-          >
-            <GradientShimmer
-              gradient="sunrise"
-              duration={1.8}
-              delay={0.8}
-              spread={4}
-              angle={105}
-              pauseBetween={3500}
-              baseColor="var(--color-paper)"
-            >
-              Engineering
-            </GradientShimmer>
-            <br />
-            <GradientShimmer
-              gradient="sunrise"
-              duration={1.8}
-              delay={0.8}
-              spread={4}
-              angle={105}
-              pauseBetween={3500}
-              baseColor="var(--color-paper)"
-            >
-              the aircraft
-            </GradientShimmer>
-            <br />
-            <GradientShimmer
-              gradient="sunrise"
-              duration={1.8}
-              delay={0.8}
-              spread={4}
-              angle={105}
-              pauseBetween={3500}
-              baseColor="var(--color-paper)"
-            >
-              no one has flown.
-            </GradientShimmer>
-          </motion.h1>
+          <motion.div variants={item} className="text-center">
+            {decrypted ? (
+              <motion.h1
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
+                className="font-display text-5xl sm:text-6xl md:text-7xl leading-[1.05] font-medium tracking-tight text-center"
+              >
+                <GradientShimmer
+                  gradient="sunrise"
+                  duration={1.8}
+                  delay={0.1}
+                  spread={4}
+                  angle={105}
+                  pauseBetween={3500}
+                  baseColor="var(--color-paper)"
+                >
+                  Engineering the aircraft no one has flown.
+                </GradientShimmer>
+              </motion.h1>
+            ) : (
+              <h1 className="font-display text-5xl sm:text-6xl md:text-7xl leading-[1.05] font-medium tracking-tight text-center text-paper">
+                <DecryptText
+                  as="span"
+                  text="Engineering the aircraft no one has flown."
+                  variant="display"
+                  trigger="mount"
+                  speed={35}
+                  stagger={25}
+                  startDelay={200}
+                  loop={false}
+                  retriggerOnHover={false}
+                  onDecrypted={() => setDecrypted(true)}
+                  className="font-display text-5xl sm:text-6xl md:text-7xl leading-[1.05] font-medium tracking-tight text-center text-paper"
+                />
+              </h1>
+            )}
+          </motion.div>
 
           <motion.p variants={item} className="mt-6 text-paper-dim text-base md:text-lg max-w-lg leading-relaxed text-center">
             ALTAVIA designs autonomous flight systems — from airframe to flight
