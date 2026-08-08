@@ -61,7 +61,7 @@ export default function CustomCursor() {
   const isHover = variant === 'hover'
   const isDrag = variant === 'drag'
   const active = isHover || isDrag
-  const accent = isDrag ? '#A855F7' : '#00F0FF'
+  const accent = isDrag ? '#4fd6c4' : '#ff6b3d'
 
   return (
     <motion.div

@@ -5,14 +5,14 @@
   --font-body: "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  --color-graphite: #0B0D17;
-  --color-surface: #10132a;
-  --color-surface-raised: #161a36;
-  --color-line: #1e2340;
-  --color-paper: #e8e6de;
-  --color-paper-dim: #94A3B8;
-  --color-amber: #00F0FF;
-  --color-cyan: #A855F7;
+  --color-graphite: #08090d;
+  --color-surface: #101219;
+  --color-surface-raised: #161923;
+  --color-line: #242836;
+  --color-paper: #ece8df;
+  --color-paper-dim: #8b8d99;
+  --color-amber: #ff6b3d;
+  --color-cyan: #4fd6c4;
 }
 
 html {
@@ -146,11 +146,11 @@ body {
 .headline-shine {
   background: linear-gradient(
     110deg,
-    #e8e6de 0%,
-    #e8e6de 35%,
+    #ece8df 0%,
+    #ece8df 35%,
     #ffffff 48%,
-    #00F0FF 56%,
-    #e8e6de 70%
+    #ff6b3d 56%,
+    #ece8df 70%
   );
   background-size: 240% 100%;
   -webkit-background-clip: text;
@@ -162,11 +162,11 @@ body {
 .headline-shine-amber {
   background: linear-gradient(
     110deg,
-    #00F0FF 0%,
-    #00F0FF 35%,
+    #ff6b3d 0%,
+    #ff6b3d 35%,
     #ffffff 48%,
-    #A855F7 56%,
-    #00F0FF 70%
+    #4fd6c4 56%,
+    #ff6b3d 70%
   );
   background-size: 240% 100%;
   -webkit-background-clip: text;

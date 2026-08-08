@@ -16,7 +16,7 @@ export default function TiltCard({ children, className = '', maxTilt = 7, glare 
   const rotateX = useTransform(springY, [0, 1], [maxTilt, -maxTilt])
   const rotateY = useTransform(springX, [0, 1], [-maxTilt, maxTilt])
   const glareBg = useTransform([springX, springY], ([gx, gy]) =>
-    `radial-gradient(240px circle at ${gx * 100}% ${gy * 100}%, rgba(255,140,61,0.14), transparent 70%)`
+    `radial-gradient(240px circle at ${gx * 100}% ${gy * 100}%, rgba(255,107,61,0.14), transparent 70%)`
   )
 
   function handleMove(e) {
