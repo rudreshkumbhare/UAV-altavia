@@ -177,6 +177,12 @@ export default function TalonXModel() {
         <meshStandardMaterial color={PAPER} roughness={0.55} side={THREE.DoubleSide} />
       </mesh>
 
+      {/* connecting boom — links the main fuselage pod back to the tail nacelle */}
+      <mesh position={[0, 0, -0.53]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.07, 0.09, 0.36, 20]} />
+        <meshStandardMaterial color={PAPER} roughness={0.5} />
+      </mesh>
+
       {/* pusher prop at the tail */}
       <Propeller />
 
