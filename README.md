@@ -1,25 +1,18 @@
-# ALTAVIA
+# ALTAVIA // Autonomous Aerosystems
 
-Aerospace / UAV studio site. React + Vite + Tailwind v4 + Framer Motion + React Three Fiber.
+A high-performance web platform for Altavia, an aerospace engineering studio specializing in autonomous UAV airframes, flight control systems, and telemetry interfaces.
 
-## Local development
+## Features
 
-```bash
-npm install
-npm run dev
-```
+- **Interactive 3D Fleet:** Real-time 3D models of UAV airframes with full 360° drag-to-rotate interaction and tactical cursor tracking.
+- **Flight Telemetry Dashboard:** Integrated radar tracking, waypoint loops, and real-time mission profile status.
+- **HUD Microinteractions:** Dynamic aerospace-grade hover states, custom reticle cursors, and system loading sequences.
+- **Engineering Matrix:** Full structural breakdown across eight core disciplines (Aero, Flight Control, Computer Vision, AI).
 
-## Build
+## Tech Stack
 
-```bash
-npm run build   # outputs to dist/
-npm run preview # serve the production build locally
-```
+- **Framework:** React + Vite
+- **3D Graphics:** Three.js / React Three Fiber / Drei
+- **Styling:** Tailwind CSS / Custom CSS Variables
+- **Icons:** Lucide React
 
-## Deploy
-
-This is a standard static Vite build (`dist/`), so it deploys as-is to Vercel, Netlify,
-Cloudflare Pages, or any static host:
-
-- **Vercel / Netlify**: connect the repo — both auto-detect Vite (`npm run build`, output `dist`). No extra config needed.
-- **Any static host**: run `npm run build` and upload the contents of `dist/`.
