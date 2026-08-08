@@ -268,8 +268,9 @@ export default function AnimatedBackground() {
       {/* 3D Interactive Background Boxes across the whole site */}
       <Boxes />
 
-      {/* Radial vignette mask overlay */}
-      <div className="absolute inset-0 bg-graphite/30 [mask-image:radial-gradient(ellipse_at_center,transparent_40%,black_90%)] pointer-events-none" />
+      {/* Uniform dark wash so the interactive box glow stays muted behind text everywhere,
+          not just near the screen edges */}
+      <div className="absolute inset-0 bg-graphite/60 pointer-events-none" />
 
       {/* Particle Canvas */}
       <canvas ref={canvasRef} className="block w-full h-full relative z-10" />

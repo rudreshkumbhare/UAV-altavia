@@ -1,7 +1,6 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { SectionEyebrow } from '../components/Telemetry'
-import TiltCard from '../components/TiltCard'
 
 const STEPS = [
   { n: '01', label: 'Concept', desc: 'Mission profile defined. Constraints, payload, and operating envelope locked before a single line is drawn.' },
@@ -30,17 +29,7 @@ export default function Workflow() {
           No step skipped.
         </h2>
 
-        <TiltCard className="hud-frame group relative border border-line bg-graphite hover:bg-surface transition-colors duration-300 backdrop-blur-md p-6 md:p-12 overflow-hidden rounded-lg">
-          {/* Tactical Grid Background similar to Gallery section */}
-          <div
-            className="absolute inset-0 opacity-[0.05] pointer-events-none"
-            style={{
-              backgroundImage:
-                'linear-gradient(to right, #e8e6de 1px, transparent 1px), linear-gradient(to bottom, #e8e6de 1px, transparent 1px)',
-              backgroundSize: '32px 32px',
-            }}
-          />
-
+        <div className="hud-frame relative border border-line bg-graphite hover:bg-surface transition-colors duration-300 backdrop-blur-md p-6 md:p-12 overflow-hidden rounded-lg">
           <div ref={ref} className="relative z-20 max-w-3xl">
             {/* track */}
             <div className="absolute left-[15px] md:left-[19px] top-2 bottom-2 w-px bg-line" />
@@ -55,7 +44,7 @@ export default function Workflow() {
               ))}
             </div>
           </div>
-        </TiltCard>
+        </div>
       </div>
     </section>
   )
