@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { SectionEyebrow } from '../components/Telemetry'
-import { Boxes } from '@/components/ui/background-boxes'
+import TiltCard from '../components/TiltCard'
 
 const STEPS = [
   { n: '01', label: 'Concept', desc: 'Mission profile defined. Constraints, payload, and operating envelope locked before a single line is drawn.' },
@@ -30,12 +30,16 @@ export default function Workflow() {
           No step skipped.
         </h2>
 
-        <div className="hud-frame relative border border-line bg-surface p-6 md:p-12 overflow-hidden rounded-lg">
-          {/* Radial mask so background boxes blend smoothly into dark graphite background */}
-          <div className="absolute inset-0 w-full h-full bg-surface z-10 [mask-image:radial-gradient(transparent,white)] pointer-events-none" />
-          
-          {/* Interactive accent color background boxes */}
-          <Boxes />
+        <TiltCard className="hud-frame group relative border border-line bg-graphite hover:bg-surface transition-colors duration-300 backdrop-blur-md p-6 md:p-12 overflow-hidden rounded-lg">
+          {/* Tactical Grid Background similar to Gallery section */}
+          <div
+            className="absolute inset-0 opacity-[0.05] pointer-events-none"
+            style={{
+              backgroundImage:
+                'linear-gradient(to right, #e8e6de 1px, transparent 1px), linear-gradient(to bottom, #e8e6de 1px, transparent 1px)',
+              backgroundSize: '32px 32px',
+            }}
+          />
 
           <div ref={ref} className="relative z-20 max-w-3xl">
             {/* track */}
@@ -51,7 +55,7 @@ export default function Workflow() {
               ))}
             </div>
           </div>
-        </div>
+        </TiltCard>
       </div>
     </section>
   )

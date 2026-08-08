@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SectionEyebrow } from '../components/Telemetry'
+import TiltCard from '../components/TiltCard'
 
 const CRAFT = [
   {
@@ -93,7 +94,7 @@ export default function Portfolio() {
           </div>
 
           {/* detail panel */}
-          <div className="hud-frame border border-line bg-surface p-8 md:p-12 min-h-[420px] relative overflow-hidden">
+          <TiltCard className="hud-frame group border border-line bg-graphite hover:bg-surface transition-colors duration-300 p-8 md:p-12 min-h-[420px] relative overflow-hidden">
             {/* faint schematic backdrop */}
             <div
               className="absolute inset-0 opacity-[0.04] pointer-events-none"
@@ -126,7 +127,7 @@ export default function Portfolio() {
                 </div>
               </motion.div>
             </AnimatePresence>
-          </div>
+          </TiltCard>
         </div>
       </div>
     </section>
