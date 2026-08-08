@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SectionEyebrow } from '../components/Telemetry'
+import DroneViewport from '../components/DroneViewport'
 
 const CRAFT = [
   {
@@ -101,20 +102,24 @@ export default function Portfolio() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -16 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="relative z-10"
+                className="relative z-10 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 lg:gap-10"
               >
-                <div className="mono-label text-xs text-amber mb-3">{current.class}</div>
-                <h3 className="font-display text-3xl md:text-4xl font-medium mb-6">
-                  {current.name}
-                </h3>
-                <p className="text-paper-dim leading-relaxed max-w-lg mb-10">{current.desc}</p>
+                <div>
+                  <div className="mono-label text-xs text-amber mb-3">{current.class}</div>
+                  <h3 className="font-display text-3xl md:text-4xl font-medium mb-6">
+                    {current.name}
+                  </h3>
+                  <p className="text-paper-dim leading-relaxed max-w-lg mb-10">{current.desc}</p>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6 border-t border-line">
-                  <Stat label="Wingspan" value={current.wingspan} />
-                  <Stat label="Range" value={current.range} />
-                  <Stat label="Ceiling" value={current.ceiling} />
-                  <Stat label="Endurance" value={current.endurance} />
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6 border-t border-line">
+                    <Stat label="Wingspan" value={current.wingspan} />
+                    <Stat label="Range" value={current.range} />
+                    <Stat label="Ceiling" value={current.ceiling} />
+                    <Stat label="Endurance" value={current.endurance} />
+                  </div>
                 </div>
+
+                <DroneViewport craftId={current.id} craftName={current.name} />
               </motion.div>
             </AnimatePresence>
           </div>
