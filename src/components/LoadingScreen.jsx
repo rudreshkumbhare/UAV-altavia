@@ -43,17 +43,17 @@ export default function LoadingScreen({ onComplete }) {
         style={{
           backgroundImage:
             'linear-gradient(to right, #e8e6de 1px, transparent 1px), linear-gradient(to bottom, #e8e6de 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
+          backgroundSize: '20px 20px',
         }}
       />
 
-      <div className="hud-frame relative flex flex-col items-center gap-6 px-10 py-12 border border-line">
-        <div className="flex items-center gap-2">
-          <span className="w-1.5 h-1.5 bg-amber rounded-full animate-pulse" />
-          <span className="font-display font-semibold tracking-wide text-lg">ALTAVIA</span>
+      <div className="relative flex flex-col items-center gap-8">
+        <div className="flex items-center gap-3">
+          <span className="w-2 h-2 bg-amber rounded-full animate-pulse" />
+          <span className="font-display font-semibold tracking-wide text-2xl sm:text-3xl">ALTAVIA</span>
         </div>
 
-        <div className="w-72 sm:w-80 h-1 bg-line overflow-hidden rounded-full">
+        <div className="w-80 sm:w-[26rem] h-1.5 bg-line overflow-hidden rounded-full">
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
@@ -63,12 +63,12 @@ export default function LoadingScreen({ onComplete }) {
           />
         </div>
 
-        <div className="h-4">
+        <div className="h-5">
           <motion.span
             key={lineIndex}
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mono-label text-[10px] text-paper-dim"
+            className="mono-label text-xs text-paper-dim"
           >
             {LINES[lineIndex]}
           </motion.span>
