@@ -17,10 +17,11 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--color-graphite);
 }
 
 body {
-  background-color: var(--color-graphite);
+  background-color: transparent;
   color: var(--color-paper);
   font-family: var(--font-body);
   overflow-x: hidden;
