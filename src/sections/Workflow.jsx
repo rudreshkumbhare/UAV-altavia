@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { SectionEyebrow } from '../components/Telemetry'
+import { Boxes } from '@/components/ui/background-boxes'
 
 const STEPS = [
   { n: '01', label: 'Concept', desc: 'Mission profile defined. Constraints, payload, and operating envelope locked before a single line is drawn.' },
@@ -20,27 +21,35 @@ export default function Workflow() {
   const lineHeight = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
 
   return (
-    <section id="workflow" className="relative py-28 md:py-36 border-t border-line">
+    <section id="workflow" className="relative py-28 md:py-36 border-t border-line overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-10">
         <SectionEyebrow index="05" label="Engineering Workflow" />
-        <h2 className="font-display text-4xl md:text-5xl font-medium max-w-xl leading-tight mb-20">
+        <h2 className="font-display text-4xl md:text-5xl font-medium max-w-xl leading-tight mb-16">
           Concept to deployment.
           <br />
           No step skipped.
         </h2>
 
-        <div ref={ref} className="relative max-w-3xl">
-          {/* track */}
-          <div className="absolute left-[15px] md:left-[19px] top-2 bottom-2 w-px bg-line" />
-          <motion.div
-            style={{ height: lineHeight }}
-            className="absolute left-[15px] md:left-[19px] top-2 w-px bg-amber"
-          />
+        <div className="hud-frame relative border border-line bg-surface p-6 md:p-12 overflow-hidden rounded-lg">
+          {/* Radial mask so background boxes blend smoothly into dark graphite background */}
+          <div className="absolute inset-0 w-full h-full bg-surface z-10 [mask-image:radial-gradient(transparent,white)] pointer-events-none" />
+          
+          {/* Interactive accent color background boxes */}
+          <Boxes />
 
-          <div className="flex flex-col gap-14">
-            {STEPS.map((s, i) => (
-              <StepRow key={s.n} step={s} index={i} total={STEPS.length} />
-            ))}
+          <div ref={ref} className="relative z-20 max-w-3xl">
+            {/* track */}
+            <div className="absolute left-[15px] md:left-[19px] top-2 bottom-2 w-px bg-line" />
+            <motion.div
+              style={{ height: lineHeight }}
+              className="absolute left-[15px] md:left-[19px] top-2 w-px bg-amber"
+            />
+
+            <div className="flex flex-col gap-14">
+              {STEPS.map((s, i) => (
+                <StepRow key={s.n} step={s} index={i} total={STEPS.length} />
+              ))}
+            </div>
           </div>
         </div>
       </div>
