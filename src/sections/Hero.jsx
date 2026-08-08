@@ -2,7 +2,7 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
 import { CoordTag } from '../components/Telemetry'
 import MagneticButton from '../components/MagneticButton'
-import DecryptText from '../components/ui/decrypt-text'
+import GradientShimmer from '../components/ui/gradient-shimmer'
 
 const container = {
   hidden: {},
@@ -30,76 +30,54 @@ export default function Hero() {
         <motion.div variants={container} initial="hidden" animate="show" className="flex flex-col items-center max-w-3xl">
           <motion.div variants={item} className="flex items-center gap-3 mb-6">
             <span className="w-1.5 h-1.5 bg-amber rounded-full animate-pulse" />
-            <DecryptText
-              text="Systems Online // Direct Telemetry Feed"
-              variant="terminal"
-              trigger="mount"
-              speed={35}
-              stagger={25}
-              startDelay={200}
-              loop={false}
-              className="mono-label text-xs text-amber font-semibold border-none bg-transparent shadow-none p-0 inline-block w-auto"
-            />
+            <span className="mono-label text-xs text-amber">Systems Online</span>
           </motion.div>
 
           <motion.h1
             variants={item}
-            className="font-display text-5xl sm:text-6xl md:text-7xl leading-[1.05] font-medium tracking-tight text-center text-paper"
+            className="font-display text-5xl sm:text-6xl md:text-7xl leading-[1.05] font-medium tracking-tight text-center"
           >
-            <DecryptText
-              text="Engineering"
-              as="span"
-              variant="display"
-              trigger="mount"
-              speed={35}
-              stagger={45}
-              startDelay={300}
-              retriggerOnHover={true}
-              loop={false}
-              className="inline-block text-paper"
-            />
+            <GradientShimmer
+              gradient="sunrise"
+              duration={1.8}
+              delay={0.8}
+              spread={4}
+              angle={105}
+              pauseBetween={3500}
+              baseColor="var(--color-paper)"
+            >
+              Engineering
+            </GradientShimmer>
             <br />
-            <DecryptText
-              text="the aircraft"
-              as="span"
-              variant="display"
-              trigger="mount"
-              speed={35}
-              stagger={45}
-              startDelay={600}
-              retriggerOnHover={true}
-              loop={false}
-              className="inline-block text-paper"
-            />
+            <GradientShimmer
+              gradient="sunrise"
+              duration={1.8}
+              delay={0.8}
+              spread={4}
+              angle={105}
+              pauseBetween={3500}
+              baseColor="var(--color-paper)"
+            >
+              the aircraft
+            </GradientShimmer>
             <br />
-            <DecryptText
-              text="no one has flown."
-              as="span"
-              variant="display"
-              trigger="mount"
-              speed={35}
-              stagger={45}
-              startDelay={900}
-              retriggerOnHover={true}
-              loop={false}
-              className="inline-block text-paper"
-            />
+            <GradientShimmer
+              gradient="sunrise"
+              duration={1.8}
+              delay={0.8}
+              spread={4}
+              angle={105}
+              pauseBetween={3500}
+              baseColor="var(--color-paper)"
+            >
+              no one has flown.
+            </GradientShimmer>
           </motion.h1>
 
-          <motion.div variants={item} className="mt-6 max-w-lg">
-            <DecryptText
-              text="ALTAVIA designs autonomous flight systems — from airframe to flight control — for the environments where piloted aircraft can't go."
-              as="p"
-              variant="display"
-              trigger="mount"
-              speed={20}
-              stagger={18}
-              startDelay={600}
-              retriggerOnHover={true}
-              loop={false}
-              className="text-paper-dim text-base md:text-lg leading-relaxed text-center font-normal tracking-normal text-balance"
-            />
-          </motion.div>
+          <motion.p variants={item} className="mt-6 text-paper-dim text-base md:text-lg max-w-lg leading-relaxed text-center">
+            ALTAVIA designs autonomous flight systems — from airframe to flight
+            control — for the environments where piloted aircraft can't go.
+          </motion.p>
 
           <motion.div variants={item} className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <MagneticButton

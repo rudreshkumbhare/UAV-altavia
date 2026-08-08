@@ -23,29 +23,24 @@ export const BoxesCore = ({ className, ...rest }) => {
 
   useEffect(() => {
     const handleMouseMove = (e) => {
-      if (typeof document === 'undefined' || typeof document.elementsFromPoint !== 'function') return
-      try {
-        const elements = document.elementsFromPoint(e.clientX, e.clientY)
-        if (!elements || !Array.isArray(elements)) return
-        const box = elements.find((el) => el && el.classList && el.classList.contains('box-cell'))
+      if (typeof document === 'undefined' || !document.elementsFromPoint) return
+      const elements = document.elementsFromPoint(e.clientX, e.clientY)
+      const box = elements.find((el) => el.classList?.contains('box-cell'))
 
-        if (box) {
-          const color = getRandomColor()
-          box.style.backgroundColor = color
-          box.style.boxShadow = `0 0 14px ${color}`
-          box.style.borderColor = color
-          box.style.transition = 'background-color 0s, box-shadow 0s, border-color 0s'
+      if (box) {
+        const color = getRandomColor()
+        box.style.backgroundColor = color
+        box.style.boxShadow = `0 0 14px ${color}`
+        box.style.borderColor = color
+        box.style.transition = 'background-color 0s, box-shadow 0s, border-color 0s'
 
-          if (box._fadeTimer) clearTimeout(box._fadeTimer)
-          box._fadeTimer = setTimeout(() => {
-            box.style.transition = 'background-color 1.5s ease-out, box-shadow 1.5s ease-out, border-color 1.5s ease-out'
-            box.style.backgroundColor = 'transparent'
-            box.style.boxShadow = 'none'
-            box.style.borderColor = 'rgba(255, 140, 61, 0.18)'
-          }, 50)
-        }
-      } catch (err) {
-        // Safe guard against elementsFromPoint edge cases
+        if (box._fadeTimer) clearTimeout(box._fadeTimer)
+        box._fadeTimer = setTimeout(() => {
+          box.style.transition = 'background-color 1.5s ease-out, box-shadow 1.5s ease-out, border-color 1.5s ease-out'
+          box.style.backgroundColor = 'transparent'
+          box.style.boxShadow = 'none'
+          box.style.borderColor = 'rgba(255, 140, 61, 0.18)'
+        }, 50)
       }
     }
 
