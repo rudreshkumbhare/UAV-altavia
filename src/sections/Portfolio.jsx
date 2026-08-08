@@ -78,10 +78,10 @@ export default function Portfolio() {
                 <button
                   key={c.id}
                   onClick={() => setActive(c.id)}
-                  className={`text-left px-5 py-4 border transition-colors whitespace-nowrap lg:whitespace-normal shrink-0 ${
+                  className={`text-left px-5 py-4 border transition-colors duration-300 whitespace-nowrap lg:whitespace-normal shrink-0 ${
                     active === c.id
                       ? 'border-amber bg-surface'
-                      : 'border-line hover:border-paper-dim'
+                      : 'border-line bg-graphite hover:bg-surface hover:border-paper-dim'
                   }`}
                 >
                   <div className="mono-label text-[10px] text-paper-dim mb-1">{c.class}</div>
