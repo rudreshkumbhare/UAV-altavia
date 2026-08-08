@@ -10,6 +10,7 @@ import {
   SatelliteDish,
 } from 'lucide-react'
 import { SectionEyebrow } from '../components/Telemetry'
+import TiltCard from '../components/TiltCard'
 
 const DOMAINS = [
   {
@@ -100,22 +101,20 @@ export default function Domains() {
           {DOMAINS.map((d) => {
             const Icon = d.icon
             return (
-              <motion.div
-                key={d.code}
-                variants={card}
-                className="hud-frame group bg-graphite p-7 flex flex-col gap-5 hover:bg-surface transition-colors duration-300"
-              >
-                <div className="flex items-start justify-between">
-                  <Icon
-                    className="w-6 h-6 text-amber group-hover:scale-110 transition-transform duration-300"
-                    strokeWidth={1.5}
-                  />
-                  <span className="mono-label text-[10px] text-paper-dim">{d.code}</span>
-                </div>
-                <div>
-                  <h3 className="font-display text-lg font-medium mb-2">{d.title}</h3>
-                  <p className="text-sm text-paper-dim leading-relaxed">{d.desc}</p>
-                </div>
+              <motion.div key={d.code} variants={card} className="h-full">
+                <TiltCard className="h-full hud-frame group bg-graphite p-7 flex flex-col gap-5 hover:bg-surface transition-colors duration-300">
+                  <div className="flex items-start justify-between">
+                    <Icon
+                      className="w-6 h-6 text-amber group-hover:scale-110 transition-transform duration-300"
+                      strokeWidth={1.5}
+                    />
+                    <span className="mono-label text-[10px] text-paper-dim">{d.code}</span>
+                  </div>
+                  <div>
+                    <h3 className="font-display text-lg font-medium mb-2">{d.title}</h3>
+                    <p className="text-sm text-paper-dim leading-relaxed">{d.desc}</p>
+                  </div>
+                </TiltCard>
               </motion.div>
             )
           })}

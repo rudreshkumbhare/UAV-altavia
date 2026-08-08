@@ -42,7 +42,7 @@ export default function LoadingScreen({ onComplete }) {
         className="absolute inset-0 opacity-[0.06] pointer-events-none"
         style={{
           backgroundImage:
-            'linear-gradient(to right, #ece8df 1px, transparent 1px), linear-gradient(to bottom, #ece8df 1px, transparent 1px)',
+            'linear-gradient(to right, #e8e6de 1px, transparent 1px), linear-gradient(to bottom, #e8e6de 1px, transparent 1px)',
           backgroundSize: '48px 48px',
         }}
       />
@@ -53,13 +53,13 @@ export default function LoadingScreen({ onComplete }) {
           <span className="font-display font-semibold tracking-wide text-lg">ALTAVIA</span>
         </div>
 
-        <div className="w-72 h-[3px] bg-line rounded-full overflow-hidden">
+        <div className="w-72 sm:w-80 h-1 bg-line overflow-hidden rounded-full">
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 1.7, ease: [0.16, 1, 0.3, 1] }}
             style={{ transformOrigin: 'left' }}
-            className="h-full bg-amber"
+            className="h-full bg-amber rounded-full"
           />
         </div>
 
