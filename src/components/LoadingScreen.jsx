@@ -29,7 +29,7 @@ export default function LoadingScreen({ onComplete }) {
       clearTimeout(doneTimer)
       document.body.style.overflow = prevOverflow
     }
-  }, [onComplete])
+  }, [])
 
   return (
     <motion.div

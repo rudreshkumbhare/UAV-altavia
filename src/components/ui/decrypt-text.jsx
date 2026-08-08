@@ -119,7 +119,10 @@ trigger = "inview",
     runRef.current += 1;
     stop();
     const cells = charRefs.current.filter((el) => el !== null);
-    if (cells.length === 0) return;
+    if (cells.length === 0) {
+      resolveAll();
+      return;
+    }
 
     lastStartRef.current = performance.now();
     playedRef.current = true;
@@ -163,8 +166,9 @@ trigger = "inview",
       rafRef.current = requestAnimationFrame(frame);
     };
     rafRef.current = requestAnimationFrame(frame);
-  }, [jitter, loop, pool, seed, speed, stagger, startDelay, stop]);
-  React.useLayoutEffect(() => {
+  }, [jitter, loop, pool, seed, speed, stagger, startDelay, stop, resolveAll]);
+
+  React.useEffect(() => {
     if (reduceNow) {
       stop();
       resolveAll();
