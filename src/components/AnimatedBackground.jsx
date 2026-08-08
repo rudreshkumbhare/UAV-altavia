@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react'
+import { Boxes } from '@/components/ui/background-boxes'
 
 // Fixed, full-viewport canvas that sits behind all page content.
-// Draws a slowly drifting grid, an occasional radar-style sweep, faint
-// interactive particles that react and disperse when the cursor moves over them,
-// and rare "contact" blips at grid intersections.
+// Draws 3D interactive background boxes across the site, a slowly drifting grid,
+// an occasional radar-style sweep, and faint interactive particles.
 export default function AnimatedBackground() {
   const canvasRef = useRef(null)
 
@@ -265,8 +265,16 @@ export default function AnimatedBackground() {
 
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-      <canvas ref={canvasRef} className="block w-full h-full" />
+      {/* 3D Interactive Background Boxes across the whole site */}
+      <Boxes />
+
+      {/* Radial vignette mask overlay */}
+      <div className="absolute inset-0 bg-graphite/30 [mask-image:radial-gradient(ellipse_at_center,transparent_40%,black_90%)] pointer-events-none" />
+
+      {/* Particle Canvas */}
+      <canvas ref={canvasRef} className="block w-full h-full relative z-10" />
     </div>
   )
 }
+
 
